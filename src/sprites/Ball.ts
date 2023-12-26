@@ -9,8 +9,14 @@ export default class Ball
   extends Phaser.Physics.Arcade.Sprite
   implements BallProperties
 {
-  xSpeed = 100;
-  ySpeed = 100;
+  INITIAL_SPEED = 100;
+  xSpeed = this.INITIAL_SPEED;
+  ySpeed = this.INITIAL_SPEED;
+  MAX_SPEED = 1500;
+  SPEED_INCREMENT = 20;
+  initialX = -1;
+  initialY = -1;
+
   constructor(config: Config) {
     super(config.scene, config.x, config.y, config.texture);
 
@@ -18,10 +24,13 @@ export default class Ball
     config.scene.add.existing(this); // Add the ball to the scene
     config.scene.physics.add.existing(this); // Enable physics for the ball
 
+    this.initialX = config.x;
+    this.initialY = config.y;
+
     this.setScale(0.2).refreshBody();
     this.setCollideWorldBounds(true);
     this.body.onWorldBounds = true;
-    this.setVelocity(this.xSpeed, this.ySpeed);
+    this.setVelocity(-this.xSpeed, this.ySpeed);
 
     this.scene.physics.world.on(
       "worldbounds",
@@ -41,6 +50,7 @@ export default class Ball
         if (left) {
           body.velocity.y = -this.ySpeed;
           this.scene.physics.pause();
+          this.scene.isGameOver = true;
           this.setTint(0xff0000);
         }
         if (right) {
@@ -60,9 +70,25 @@ export default class Ball
     );
 
     setInterval(() => {
-      this.xSpeed += 20;
-      this.ySpeed += 20;
+      this.xSpeed = Math.min(
+        this.xSpeed + this.SPEED_INCREMENT,
+        this.MAX_SPEED
+      );
+      this.ySpeed = Math.min(
+        this.ySpeed + this.SPEED_INCREMENT,
+        this.MAX_SPEED
+      );
     }, 1000);
+  }
+
+  reset() {
+    this.xSpeed = this.INITIAL_SPEED;
+    this.ySpeed = this.INITIAL_SPEED;
+    this.setX(this.initialX);
+    this.setY(this.initialY);
+    this.setVelocity(-this.xSpeed, this.ySpeed);
+    this.scene.physics.resume();
+    this.clearTint();
   }
 
   update() {}

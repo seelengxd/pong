@@ -4,9 +4,11 @@ import Platform from "../sprites/Platform";
 
 export default class Demo extends Phaser.Scene {
   score = 0;
+  isGameOver = false;
   platform: null | Platform = null;
   ball: null | Ball = null;
   scoreboard: null | Phaser.GameObjects.Text = null;
+  gameOverText: null | Phaser.GameObjects.Text = null;
 
   constructor() {
     super("GameScene");
@@ -28,10 +30,27 @@ export default class Demo extends Phaser.Scene {
       texture: "platform",
     });
     this.ball = new Ball({ scene: this, x: 400, y: 300, texture: "ball" });
+    this.gameOverText = this.add.text(
+      10,
+      30,
+      "Game Over! Press 'r' to restart",
+      { color: "red" }
+    );
+    this.gameOverText.setVisible(this.isGameOver);
   }
 
   update() {
     this.platform?.update();
     this.scoreboard?.setText("Score: " + this.score);
+    this.gameOverText?.setVisible(this.isGameOver);
+
+    if (this.isGameOver) {
+      const rKey = this.input.keyboard.addKey("r");
+      if (rKey.isDown) {
+        this.isGameOver = false;
+        this.ball?.reset();
+        this.score = 0;
+      }
+    }
   }
 }
