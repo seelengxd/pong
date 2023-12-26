@@ -6,7 +6,7 @@ export default class Demo extends Phaser.Scene {
   score = 0;
   platform: null | Platform = null;
   ball: null | Ball = null;
-  scoreboard: null | Phaser.GameObjects.Text;
+  scoreboard: null | Phaser.GameObjects.Text = null;
 
   constructor() {
     super("GameScene");
@@ -19,7 +19,7 @@ export default class Demo extends Phaser.Scene {
   }
 
   create() {
-    const logo = this.add.image(400, 300, "logo").setScale(0.5);
+    this.add.image(400, 300, "logo").setScale(0.5);
     this.scoreboard = this.add.text(10, 10, "Score: 0");
     this.platform = new Platform({
       scene: this,
