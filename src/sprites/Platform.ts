@@ -1,10 +1,12 @@
 import { Config } from "../utils/config";
 
 export default class Platform extends Phaser.Physics.Arcade.Sprite {
-  MOVEMENT_SPEED = 200;
+  MOVEMENT_SPEED = 300;
+  X = -1;
   constructor(config: Config) {
     super(config.scene, config.x, config.y, config.texture);
 
+    this.X = config.x;
     config.scene.add.existing(this);
     config.scene.physics.add.existing(this);
 
@@ -14,12 +16,13 @@ export default class Platform extends Phaser.Physics.Arcade.Sprite {
 
   update() {
     const cursors = this.scene.input.keyboard.createCursorKeys();
-    if (cursors.left.isDown) {
-      this.setVelocityX(-this.MOVEMENT_SPEED);
-    } else if (cursors.right.isDown) {
-      this.setVelocityX(this.MOVEMENT_SPEED);
+    if (cursors.up.isDown) {
+      this.setVelocityY(-this.MOVEMENT_SPEED);
+    } else if (cursors.down.isDown) {
+      this.setVelocityY(this.MOVEMENT_SPEED);
     } else {
-      this.setVelocityX(0);
+      this.setVelocityY(0);
     }
+    this.setX(this.X);
   }
 }

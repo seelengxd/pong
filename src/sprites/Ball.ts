@@ -34,14 +34,14 @@ export default class Ball
       ) => {
         if (down) {
           body.velocity.y = -this.ySpeed;
-          this.scene.physics.pause();
-          this.setTint(0xff0000);
         }
         if (up) {
           body.velocity.y = this.ySpeed;
         }
         if (left) {
-          body.velocity.x = this.xSpeed;
+          body.velocity.y = -this.ySpeed;
+          this.scene.physics.pause();
+          this.setTint(0xff0000);
         }
         if (right) {
           body.velocity.x = -this.xSpeed;
@@ -53,8 +53,9 @@ export default class Ball
       this.scene.platform,
       this,
       (platform, ball) => {
-        ball.body.velocity.y = -this.ySpeed;
-        platform.body.velocity.y = 0;
+        ball.body.velocity.x = this.xSpeed;
+        platform.body.velocity.x = 0;
+        this.scene.score++;
       }
     );
 
